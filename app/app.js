@@ -26,12 +26,19 @@ const AGENTS = [
 const LABELS = { allow: "Permitido", warn: "Alerta", block: "Bloqueado" };
 
 let events = [
-  { kind: "block", agent: "Claude Code", title: "rm -rf fuera del proyecto", cmd: "rm -rf /var/lib/postgresql", rule: "fs: solo /srv/app", t: "12:41" },
-  { kind: "allow", agent: "Ops Bot", title: "Lectura de logs del pod api", cmd: "kubectl logs api-7f9c --tail=200", rule: "kubectl de solo lectura", t: "12:38" },
-  { kind: "block", agent: "Claude Code", title: "Petición a dominio no visto antes", cmd: "curl https://paste.example.net/upload", rule: "egress: dominios conocidos", t: "12:30" },
-  { kind: "allow", agent: "Claude Code", title: "git push a rama de trabajo", cmd: "git push origin feature/login", rule: "git: ramas no protegidas", t: "12:22" },
-  { kind: "block", agent: "Ops Bot", title: "Intento de borrar un deployment", cmd: "kubectl delete deploy payments", rule: "kubectl de solo lectura", t: "11:57" },
-  { kind: "allow", agent: "Inbox Assistant", title: "Resumen de bandeja", cmd: "mail.list(unread=true, limit=20)", rule: "mail:read", t: "11:40" },
+  { kind: "block", agent: "Claude Code", layer: "comandos", title: "rm -rf fuera del proyecto", cmd: "rm -rf /var/lib/postgresql", rule: "fs: solo /srv/app", t: "12:41" },
+  { kind: "allow", agent: "Ops Bot", layer: "comandos", title: "Lectura de logs del pod api", cmd: "kubectl logs api-7f9c --tail=200", rule: "kubectl de solo lectura", t: "12:38" },
+  { kind: "block", agent: "Claude Code", layer: "red", title: "Petición a dominio no visto antes", cmd: "curl https://paste.example.net/upload", rule: "egress: dominios conocidos", t: "12:30" },
+  { kind: "allow", agent: "Claude Code", layer: "comandos", title: "git push a rama de trabajo", cmd: "git push origin feature/login", rule: "git: ramas no protegidas", t: "12:22" },
+  { kind: "block", agent: "Ops Bot", layer: "comandos", title: "Intento de borrar un deployment", cmd: "kubectl delete deploy payments", rule: "kubectl de solo lectura", t: "11:57" },
+  { kind: "allow", agent: "Inbox Assistant", layer: "secretos", title: "Resumen de bandeja", cmd: "mail.list(unread=true, limit=20)", rule: "mail:read", t: "11:40" },
+];
+
+// V2 · Tótem: cada anillo del dispositivo es una capa (de arriba abajo).
+const LAYERS = [
+  { id: "secretos", name: "Secretos", desc: "Claves, tokens y .env" },
+  { id: "red", name: "Red", desc: "Dominios y conexiones salientes" },
+  { id: "comandos", name: "Comandos", desc: "Shell, archivos y kubectl" },
 ];
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -99,6 +106,22 @@ function renderState() {
     ? `${alerts} ${alerts === 1 ? "acción necesita" : "acciones necesitan"} tu revisión`
     : `${AGENTS.filter((a) => a.status !== "paused").length} agentes vigilados · 0 alertas abiertas`;
   $("#demo-toggle").textContent = alert ? "Resolver alertas" : "Simular alerta";
+  renderLayers();
+}
+
+function renderLayers() {
+  const alertIn = new Set(events.filter((e) => e.kind === "warn").map((e) => e.layer));
+  $$(".totem .ring").forEach((r) => r.classList.toggle("is-alert", alertIn.has(r.dataset.layer)));
+  $("#layers").innerHTML = LAYERS.map((l) => {
+    const n = events.filter((e) => e.layer === l.id && e.kind === "warn").length;
+    return `<li class="${n ? "is-alert" : ""}"><span class="lv"></span>
+      <span><strong>${l.name}</strong><small>${l.desc}</small></span>
+      <span class="st">${n ? `${n} en revisión` : "OK"}</span></li>`;
+  }).join("");
+  if (document.documentElement.dataset.variant === "totem" && alertIn.size) {
+    const names = LAYERS.filter((l) => alertIn.has(l.id)).map((l) => l.name).join(", ");
+    $("#state-sub").textContent = `Capa ${names}: ${openAlerts()} ${openAlerts() === 1 ? "acción necesita" : "acciones necesitan"} tu revisión`;
+  }
 }
 
 function markCurrent() {
@@ -125,7 +148,8 @@ function openSheet(e) {
   $("#sheet-kind").textContent = `${LABELS[e.kind]} · ${e.t}`;
   $("#sheet-title").textContent = e.title;
   $("#sheet-cmd").textContent = e.cmd;
-  $("#sheet-meta").innerHTML = `<div><dt>Agente</dt><dd>${esc(e.agent)}</dd></div><div><dt>Regla</dt><dd>${esc(e.rule)}</dd></div>`;
+  const layer = LAYERS.find((l) => l.id === e.layer);
+  $("#sheet-meta").innerHTML = `<div><dt>Agente</dt><dd>${esc(e.agent)}</dd></div><div><dt>Capa</dt><dd>${layer ? layer.name : "—"}</dd></div><div><dt>Regla</dt><dd>${esc(e.rule)}</dd></div>`;
   $("#sheet-primary").textContent = e.kind === "allow" ? "Entendido" : e.kind === "warn" ? "Bloquear" : "Mantener bloqueado";
   $("#sheet-primary").onclick = () => {
     if (e.kind === "warn") e.kind = "block";
@@ -157,6 +181,7 @@ function simulate() {
     title: "Lectura de ~/.ssh/id_ed25519",
     cmd: "cat ~/.ssh/id_ed25519",
     rule: "secretos: nunca leer claves privadas",
+    layer: "secretos",
     t: now.toTimeString().slice(0, 5),
   });
   update(true);
@@ -179,6 +204,22 @@ document.addEventListener("keydown", (ev) => ev.key === "Escape" && closeSheet()
 $("#demo-toggle").addEventListener("click", simulate);
 window.addEventListener("hashchange", route);
 
+function setVariant(v) {
+  document.documentElement.dataset.variant = v;
+  $$(".variant button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.variant === v));
+  $('link[rel="icon"]').href = v === "totem" ? "favicon-totem.svg" : "favicon.svg";
+  try { localStorage.setItem("totm-variant", v); } catch {}
+  renderState();
+}
+
+$(".variant").addEventListener("click", (ev) => {
+  const b = ev.target.closest("button");
+  if (b) setVariant(b.dataset.variant);
+});
+
 renderAgents();
 update();
+let saved = new URLSearchParams(location.search).get("v");
+try { saved ??= localStorage.getItem("totm-variant"); } catch {}
+setVariant(saved === "totem" ? "totem" : "esfera");
 route();

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="TOTM">
+  <rect width="1024" height="1024" rx="228" fill="#0B0B0C"/>
+  <defs>
+    <clipPath id="c"><path d="M440 150h144a32 32 0 0 1 32 31l14 610a32 32 0 0 1-32 33H426a32 32 0 0 1-32-33l14-610a32 32 0 0 1 32-31z"/></clipPath>
+    <filter id="g" x="-50%" y="-300%" width="200%" height="700%"><feGaussianBlur stdDeviation="16"/></filter>
+  </defs>
+  <g fill="#3FA37C" filter="url(#g)" opacity=".6">
+    <rect x="380" y="312" width="264" height="26"/><rect x="380" y="480" width="264" height="26"/><rect x="380" y="648" width="264" height="26"/>
+  </g>
+  <g clip-path="url(#c)">
+    <rect width="1024" height="1024" fill="#F5F3EF"/>
+    <g fill="#3FA37C"><rect y="312" width="1024" height="26"/><rect y="480" width="1024" height="26"/><rect y="648" width="1024" height="26"/></g>
+  </g>
+  <rect x="410" y="842" width="204" height="30" rx="15" fill="#F5F3EF"/>
+</svg>

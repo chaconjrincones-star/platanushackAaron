@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-state="ok">
+<html lang="es" data-state="ok" data-variant="esfera">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -33,6 +33,9 @@
       <header class="topbar">
         <h1 id="view-title">Inicio</h1>
         <div class="topbar-actions">
+          <div class="variant" role="group" aria-label="Versión de diseño">
+            <button data-variant="esfera">V1 · Esfera</button><button data-variant="totem">V2 · Tótem</button>
+          </div>
           <button class="pill" id="demo-toggle" title="Simular un cambio de estado">Simular alerta</button>
         </div>
       </header>
@@ -40,11 +43,13 @@
       <section class="view" data-view="inicio">
         <div class="hero card">
           <div class="orb" aria-hidden="true"><span class="band"></span><span class="base"></span></div>
+          <div class="totem" aria-hidden="true"><span class="ring" data-layer="secretos"></span><span class="ring" data-layer="red"></span><span class="ring" data-layer="comandos"></span><span class="base"></span></div>
           <div class="hero-text">
             <p class="eyebrow" id="state-eyebrow">Estado</p>
             <h2 id="state-title">Protegido</h2>
             <p id="state-sub">3 agentes vigilados · 0 alertas abiertas</p>
           </div>
+          <ul class="layers" id="layers"></ul>
         </div>
 
         <div class="stats">
@@ -84,6 +89,7 @@
         <div class="split">
           <div class="card device-card">
             <div class="orb small" aria-hidden="true"><span class="band"></span><span class="base"></span></div>
+            <div class="totem small" aria-hidden="true"><span class="ring" data-layer="secretos"></span><span class="ring" data-layer="red"></span><span class="ring" data-layer="comandos"></span><span class="base"></span></div>
             <dl class="specs">
               <div><dt>Nombre</dt><dd>totm-01</dd></div>
               <div><dt>Hardware</dt><dd>Raspberry Pi 2 Model B</dd></div>

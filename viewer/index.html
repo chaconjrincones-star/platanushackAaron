@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TOTM 3D</title>
+  <link rel="icon" href="../app/favicon.svg" type="image/svg+xml">
+  <style>
+    :root { --bg: #0B0B0C; --text: #F5F3EF; --muted: #8C8C92; --line: #26262A; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif; overflow: hidden; }
+    canvas { display: block; }
+    .ui { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: calc(100% - 32px); }
+    .seg { display: flex; background: #151517; border-radius: 999px; padding: 4px; }
+    .seg button { border: 0; background: none; color: var(--muted); padding: 8px 16px; border-radius: 999px; font: inherit; cursor: pointer; }
+    .seg button.on { background: var(--text); color: var(--bg); }
+    .label { position: fixed; top: 24px; left: 24px; }
+    .label small { display: block; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; font-size: 11px; }
+    .label strong { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+    body.shot .ui { display: none; }
+  </style>
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <div class="label"><small id="sub">Versión 1</small><strong id="name">Esfera</strong></div>
+  <div class="ui">
+    <div class="seg" id="v"><button data-v="v1_esfera" class="on">V1 · Esfera</button><button data-v="v2_totem">V2 · Tótem</button></div>
+    <div class="seg" id="s"><button data-s="jade" class="on">Protegido</button><button data-s="ambar">Alerta</button></div>
+    <div class="seg" id="r"><button data-r="1" class="on">Girar</button></div>
+  </div>
+  <script type="module">
+    import * as THREE from "three";
+    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+    import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+    import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+    import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+    import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+    // ?v=v2_totem&s=ambar&az=200&el=15&shot=1 para capturas
+    const q = new URLSearchParams(location.search);
+    const state = { v: q.get("v") || "v1_esfera", s: q.get("s") || "jade", rotate: !q.has("shot") };
+    if (q.has("shot")) document.body.classList.add("shot");
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.75;
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color("#0B0B0C");
+    scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environmentIntensity = 0.35;
+
+    const key = new THREE.DirectionalLight("#ffffff", 0.9);
+    key.position.set(-250, 400, 300);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    Object.assign(key.shadow.camera, { left: -200, right: 200, top: 200, bottom: -200 });
+    key.shadow.radius = 8;
+    scene.add(key);
+
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(600, 64), new THREE.ShadowMaterial({ opacity: 0.45 }));
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 1, 5000);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.8, 0.35, 1.05));
+    composer.addPass(new OutputPass());
+
+    const loader = new GLTFLoader();
+    const cache = {};
+    let current;
+
+    async function load() {
+      const url = `../totm-3d/cad/out/${state.v}/${state.v}-${state.s}.glb`;
+      cache[url] ??= await loader.loadAsync(url);
+      if (current) scene.remove(current);
+      current = cache[url].scene;
+      current.traverse((o) => {
+        if (!o.isMesh) return;
+        o.castShadow = o.receiveShadow = true;
+        const m = o.material;
+        if (m.emissive && m.emissive.getHex() !== 0) m.emissiveIntensity = 2.0;
+      });
+      scene.add(current);
+
+      const box = new THREE.Box3().setFromObject(current);
+      const size = box.getSize(new THREE.Vector3());
+      const target = new THREE.Vector3(0, size.y / 2, 0);
+      const dist = Math.max(size.y, size.x) * 2.6;
+      const az = THREE.MathUtils.degToRad(+(q.get("az") ?? 20));
+      const el = THREE.MathUtils.degToRad(+(q.get("el") ?? 12));
+      camera.position.set(Math.sin(az) * Math.cos(el) * dist, target.y + Math.sin(el) * dist, Math.cos(az) * Math.cos(el) * dist);
+      controls.target.copy(target);
+
+      const v2 = state.v === "v2_totem";
+      document.getElementById("sub").textContent = v2 ? "Versión 2" : "Versión 1";
+      document.getElementById("name").textContent = (v2 ? "Tótem" : "Esfera") + (state.s === "ambar" ? " · alerta" : "");
+      document.body.dataset.ready = "1";
+    }
+
+    function bind(id, attr, fn) {
+      document.getElementById(id).addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        fn(b.dataset[attr], b);
+      });
+    }
+    const pick = (id, b) => document.querySelectorAll(`#${id} button`).forEach((x) => x.classList.toggle("on", x === b));
+    bind("v", "v", (v, b) => { state.v = v; pick("v", b); load(); });
+    bind("s", "s", (s, b) => { state.s = s; pick("s", b); load(); });
+    bind("r", "r", (_, b) => { state.rotate = !state.rotate; b.classList.toggle("on", state.rotate); });
+
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      composer.setSize(innerWidth, innerHeight);
+    });
+
+    renderer.setAnimationLoop(() => {
+      if (state.rotate && current) current.rotation.y += 0.004;
+      controls.update();
+      composer.render();
+    });
+    load();
+  </script>
+</body>
+</html>

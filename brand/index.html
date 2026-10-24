@@ -1,32 +1,72 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TOTM · Marca</title>
+<title>TOTM · Dos versiones</title>
 <style>
-  body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;background:#0B0B0C;color:#F5F3EF}
-  main{max-width:1040px;margin:0 auto;padding:56px 24px}
-  h1{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#8a8a8f;font-weight:500;margin:0 0 32px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
-  .tile{border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:center;min-height:200px;position:relative}
-  .tile small{position:absolute;left:20px;bottom:14px;font-size:11px;letter-spacing:.08em;opacity:.55}
-  .dark{background:#151517}.light{background:#F5F3EF;color:#0B0B0C}
-  .sw{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}.sw div{flex:1 1 140px;border-radius:16px;padding:64px 16px 14px;font-size:12px}
-  p.t{font-size:28px;letter-spacing:-.02em;margin:48px 0 4px}p.s{color:#8a8a8f;margin:0}
+  :root{--bg:#0B0B0C;--card:#151517;--text:#F5F3EF;--muted:#8a8a8f}
+  body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+  main{max-width:1120px;margin:0 auto;padding:48px 16px}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+  .hero{background:var(--card);border-radius:24px;padding:56px 24px;text-align:center}
+  .hero img{width:min(320px,70%)}
+  .hero p{color:var(--muted);margin:20px 0 0}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  .col{background:var(--card);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:16px}
+  .col h2{margin:0;font-size:24px;letter-spacing:-.02em}
+  .col p{margin:0;color:var(--muted)}
+  .render{border-radius:16px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .render img{width:100%;display:block;aspect-ratio:9/11;object-fit:cover}
+  .marks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .marks div{border-radius:14px;aspect-ratio:1;display:grid;place-items:center;background:#0B0B0C}
+  .marks div.l{background:#F5F3EF}
+  .marks img{width:70%}
+  .marks small,.render+small{font-size:11px;color:var(--muted)}
+  ul{margin:0;padding-left:18px;color:var(--muted)} li{margin:4px 0}
+  .sw{display:flex;gap:8px;margin-top:16px}.sw div{flex:1;border-radius:14px;padding:40px 12px 10px;font-size:12px}
+  @media (max-width:760px){.cols{grid-template-columns:1fr}}
 </style></head><body><main>
-<h1>TOTM — identidad</h1>
-<div class="grid">
-  <div class="tile dark" style="grid-column:1/-1;min-height:260px"><img src="totm-wordmark-dark.svg" width="360" alt="TOTM"><small>WORDMARK · SOBRE OBSIDIANA</small></div>
-  <div class="tile light"><img src="totm-wordmark-light.svg" width="240" alt=""><small>WORDMARK · SOBRE HUESO</small></div>
-  <div class="tile dark"><img src="totm-mark.svg" width="120" alt=""><small>ISOTIPO · PROTEGIDO</small></div>
-  <div class="tile dark"><img src="totm-mark-alert.svg" width="120" alt=""><small>ISOTIPO · ALERTA</small></div>
-  <div class="tile light"><img src="totm-mark-light.svg" width="120" alt=""><small>ISOTIPO · FONDO CLARO</small></div>
-  <div class="tile light"><img src="totm-vertical.svg" height="200" alt=""><small>VERTICAL · FRENTE DEL DISPOSITIVO</small></div>
-  <div class="tile dark"><img src="totm-app-icon.svg" width="140" alt=""><small>ÍCONO DE APP</small></div>
+<p class="eyebrow">TOTM · identidad compartida</p>
+<div class="hero">
+  <img src="totm-wordmark-dark.svg" alt="TOTM">
+  <p>El tótem de tus agentes. · La O en anillo es el "ojo": jade protegido, ámbar alerta.</p>
 </div>
-<p class="t">El tótem de tus agentes.</p><p class="s">Guardian for your AI agents · Platanus Hack 26 Caracas</p>
+
+<div class="cols">
+  <section class="col">
+    <p class="eyebrow">Versión 1</p>
+    <h2>Esfera</h2>
+    <p>Un objeto, una luz. Tranquilo y doméstico: estado global en una sola banda.</p>
+    <div class="render"><img src="renders/v1-esfera-frente.png" alt="Esfera, frente"><img src="renders/v1-esfera-atras.png" alt="Esfera, atrás con puertos"></div>
+    <div class="marks">
+      <div><img src="totm-mark.svg" alt=""></div><div><img src="totm-mark-alert.svg" alt=""></div>
+      <div class="l"><img src="totm-mark-light.svg" alt=""></div><div><img src="totm-app-icon.svg" alt=""></div>
+    </div>
+    <ul>
+      <li>Ø 140 mm · banda de luz de 8 mm</li>
+      <li>Puertos de la Pi 2B visibles atrás (USB-A + Ethernet)</li>
+      <li>Riesgo: se parece a HomePod mini / Echo Dot</li>
+    </ul>
+  </section>
+  <section class="col">
+    <p class="eyebrow">Versión 2</p>
+    <h2>Tótem</h2>
+    <p>Cuatro segmentos, tres anillos. Cada anillo es una capa de seguridad: la alerta dice dónde.</p>
+    <div class="render"><img src="renders/v2-totem-frente.png" alt="Tótem, frente"><img src="renders/v2-totem-alerta.png" alt="Tótem en alerta, capa de secretos en ámbar"></div>
+    <div class="marks">
+      <div><img src="totm-totem-mark.svg" alt=""></div><div><img src="totm-totem-mark-alert.svg" alt=""></div>
+      <div class="l"><img src="totm-totem-mark-light.svg" alt=""></div><div><img src="totm-totem-app-icon.svg" alt=""></div>
+    </div>
+    <ul>
+      <li>Ø 76 → 68 mm · 220 mm de alto · una letra por segmento</li>
+      <li>Anillos: comandos · red · secretos (de abajo arriba)</li>
+      <li>La Pi va parada; los cables salen por debajo</li>
+    </ul>
+  </section>
+</div>
+
 <div class="sw">
-  <div style="background:#0B0B0C;box-shadow:inset 0 0 0 1px #2a2a2e">Obsidiana<br>#0B0B0C</div>
-  <div style="background:#F5F3EF;color:#0B0B0C">Hueso<br>#F5F3EF</div>
-  <div style="background:#3FA37C">Jade · protegido<br>#3FA37C</div>
-  <div style="background:#E8A33D;color:#0B0B0C">Ámbar · alerta<br>#E8A33D</div>
+  <div style="background:#0B0B0C;box-shadow:inset 0 0 0 1px #2a2a2e">Obsidiana #0B0B0C</div>
+  <div style="background:#F5F3EF;color:#0B0B0C">Hueso #F5F3EF</div>
+  <div style="background:#3FA37C">Jade #3FA37C</div>
+  <div style="background:#E8A33D;color:#0B0B0C">Ámbar #E8A33D</div>
 </div>
 </main></body></html>

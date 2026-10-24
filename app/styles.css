@@ -115,6 +115,43 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.02em; }
 [data-state="alert"] .orb .band { animation-duration: 1.4s; }
 @keyframes breathe { 50% { opacity: .65; } }
 
+/* ---------- V2 · Tótem ---------- */
+.totem {
+  position: relative; flex: none; width: 66px; height: 200px; margin: 0 51px;
+  border-radius: 12px 12px 10px 10px;
+  clip-path: polygon(6% 0, 94% 0, 100% 97%, 0 97%);
+  background: linear-gradient(90deg, #D9D5CD 0%, #FFFFFF 38%, var(--bone) 60%, #CFCBC3 100%);
+}
+.totem .ring {
+  position: absolute; left: 0; right: 0; height: 4px; background: var(--jade);
+  box-shadow: 0 0 14px 2px var(--jade); transition: background .6s, box-shadow .6s;
+}
+.totem .ring:nth-child(1) { top: 22%; }
+.totem .ring:nth-child(2) { top: 41%; }
+.totem .ring:nth-child(3) { top: 60%; }
+.totem .ring.is-alert { background: var(--amber); box-shadow: 0 0 16px 3px var(--amber); animation: breathe 1.4s ease-in-out infinite; }
+.totem .base { position: absolute; bottom: 0; left: 12%; right: 12%; height: 3%; background: #BDB9B1; border-radius: 3px; }
+.totem.small { height: 150px; width: 50px; margin: 0 35px; }
+.totem.small .ring { height: 3px; }
+
+.layers { list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; flex-direction: column; gap: 8px; min-width: 260px; }
+.layers li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); }
+.layers .lv { width: 18px; height: 4px; border-radius: 2px; background: var(--jade); flex: none; }
+.layers strong { display: block; font-weight: 500; font-size: 14px; }
+.layers small { color: var(--muted); font-size: 12px; }
+.layers .st { margin-left: auto; font-size: 12px; color: var(--muted); }
+.layers li.is-alert { box-shadow: inset 0 0 0 1px var(--amber); }
+.layers li.is-alert .lv { background: var(--amber); }
+.layers li.is-alert .st { color: var(--amber); }
+
+[data-variant="esfera"] .totem, [data-variant="esfera"] .layers { display: none; }
+[data-variant="totem"] .orb { display: none; }
+
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+.variant { display: flex; background: var(--surface); border-radius: 999px; padding: 3px; }
+.variant button { border: 0; background: none; color: var(--muted); padding: 6px 12px; border-radius: 999px; font-size: 13px; }
+.variant button[aria-pressed="true"] { background: var(--surface-2); color: var(--text); }
+
 /* ---------- Stats ---------- */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .stat small { color: var(--muted); font-size: 13px; }
@@ -223,6 +260,9 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.02em; }
   .hero { flex-direction: column; text-align: center; gap: 16px; padding: 32px 20px; }
   .hero h2 { font-size: 36px; }
   .orb { width: 148px; }
+  .layers { margin: 0; width: 100%; min-width: 0; text-align: left; }
+  .topbar { flex-wrap: wrap; gap: 12px; }
+  .topbar-actions { width: 100%; justify-content: space-between; }
   .stats { gap: 10px; }
   .card { padding: 16px; }
   .stat strong { font-size: 24px; }
