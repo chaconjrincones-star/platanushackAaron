@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es" data-state="ok">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0B0B0C">
+  <title>TOTM</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <!-- Sidebar (desktop) -->
+    <aside class="sidebar">
+      <a class="brand" href="#inicio" aria-label="TOTM inicio">
+        <svg viewBox="0 0 388 100" class="wordmark" aria-hidden="true">
+          <g fill="currentColor">
+            <rect x="0" y="0" width="72" height="14"/><rect x="29" y="0" width="14" height="100"/>
+            <rect x="196" y="0" width="72" height="14"/><rect x="225" y="0" width="14" height="100"/>
+            <path d="M288 100V0h16l34 52 34-52h16v100h-14V24l-30 46h-12l-30-46v76z"/>
+          </g>
+          <circle cx="134" cy="50" r="43" fill="none" stroke="var(--state)" stroke-width="14"/>
+        </svg>
+      </a>
+      <nav class="nav" aria-label="Principal"></nav>
+      <div class="device-chip">
+        <span class="dot"></span>
+        <div><strong>totm-01</strong><small>Raspberry Pi 2B · en línea</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h1 id="view-title">Inicio</h1>
+        <div class="topbar-actions">
+          <button class="pill" id="demo-toggle" title="Simular un cambio de estado">Simular alerta</button>
+        </div>
+      </header>
+
+      <section class="view" data-view="inicio">
+        <div class="hero card">
+          <div class="orb" aria-hidden="true"><span class="band"></span><span class="base"></span></div>
+          <div class="hero-text">
+            <p class="eyebrow" id="state-eyebrow">Estado</p>
+            <h2 id="state-title">Protegido</h2>
+            <p id="state-sub">3 agentes vigilados · 0 alertas abiertas</p>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="card stat"><small>Acciones revisadas hoy</small><strong>1 284</strong><span class="delta">+12% vs ayer</span></div>
+          <div class="card stat"><small>Bloqueadas</small><strong id="stat-blocked">7</strong><span class="delta">políticas aplicadas</span></div>
+          <div class="card stat"><small>Latencia media</small><strong>38<em>ms</em></strong><span class="delta">por decisión</span></div>
+          <div class="card stat"><small>Tiempo activo</small><strong>6<em>d</em> 14<em>h</em></strong><span class="delta">sin reinicios</span></div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <div class="card-head"><h3>Actividad reciente</h3><a href="#actividad">Ver todo</a></div>
+            <ul class="feed" id="feed-home"></ul>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Agentes</h3><a href="#agentes">Gestionar</a></div>
+            <ul class="agents compact" id="agents-home"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" data-view="actividad" hidden>
+        <div class="filters" role="tablist">
+          <button class="chip is-active" data-filter="all">Todo</button>
+          <button class="chip" data-filter="block">Bloqueado</button>
+          <button class="chip" data-filter="warn">Alerta</button>
+          <button class="chip" data-filter="allow">Permitido</button>
+        </div>
+        <div class="card"><ul class="feed" id="feed-all"></ul></div>
+      </section>
+
+      <section class="view" data-view="agentes" hidden>
+        <ul class="agents grid" id="agents-all"></ul>
+      </section>
+
+      <section class="view" data-view="dispositivo" hidden>
+        <div class="split">
+          <div class="card device-card">
+            <div class="orb small" aria-hidden="true"><span class="band"></span><span class="base"></span></div>
+            <dl class="specs">
+              <div><dt>Nombre</dt><dd>totm-01</dd></div>
+              <div><dt>Hardware</dt><dd>Raspberry Pi 2 Model B</dd></div>
+              <div><dt>Firmware</dt><dd>TOTM v1.1 · prototype</dd></div>
+              <div><dt>Red</dt><dd>Ethernet · 192.168.1.42</dd></div>
+              <div><dt>Temperatura</dt><dd>47 °C</dd></div>
+              <div><dt>Memoria</dt><dd>412 / 1024 MB</dd></div>
+            </dl>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Ajustes</h3></div>
+            <ul class="settings">
+              <li><div><strong>Modo estricto</strong><small>Bloquear toda acción sin política explícita</small></div><button class="switch" role="switch" aria-checked="true"></button></li>
+              <li><div><strong>Luz del tótem</strong><small>Mostrar el estado en la banda de luz</small></div><button class="switch" role="switch" aria-checked="true"></button></li>
+              <li><div><strong>Notificaciones push</strong><small>Avisar en el móvil ante una alerta</small></div><button class="switch" role="switch" aria-checked="true"></button></li>
+              <li><div><strong>Registro local</strong><small>Guardar eventos solo en el dispositivo</small></div><button class="switch" role="switch" aria-checked="false"></button></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Tab bar (mobile) -->
+  <nav class="tabbar" aria-label="Principal"></nav>
+
+  <!-- Detalle de evento -->
+  <div class="sheet-backdrop" hidden></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+    <div class="grabber"></div>
+    <p class="eyebrow" id="sheet-kind"></p>
+    <h3 id="sheet-title"></h3>
+    <pre class="code" id="sheet-cmd"></pre>
+    <dl class="specs" id="sheet-meta"></dl>
+    <div class="sheet-actions">
+      <button class="btn ghost" data-close>Cerrar</button>
+      <button class="btn primary" data-close id="sheet-primary">Mantener bloqueado</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

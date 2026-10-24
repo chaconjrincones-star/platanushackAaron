@@ -1,0 +1,10 @@
+{
+  "shape": {
+    "forma": "A minimalist smart home security device shaped as a perfect sphere, about 14 cm in diameter, resting on a small flat circular pedestal base. The sphere is split into two halves by a thin continuous horizontal light groove slightly above the equator. Smooth seamless surfaces, soft rounded edges, Apple-style industrial design. On the lower back half there is one rounded rectangular cutout exposing a small circuit board with USB-A and Ethernet ports. No buttons, no text, no logos, no visible screws.",
+    "forma-rpi2b": "A minimalist smart home security device shaped as a perfect sphere, about 14 cm in diameter, resting on a small flat circular pedestal base. A thin continuous horizontal light groove slightly above the equator splits it into two halves. Smooth seamless matte surfaces, soft rounded edges, Apple-style industrial design. On the lower back half, one rounded rectangular cutout exposes a Raspberry Pi 2 board edge: four stacked USB-A ports and one Ethernet port side by side. No USB-C. No buttons, no text, no logos, no visible screws."
+  },
+  "texture": {
+    "jade": "Matte warm white plastic body with a fine soft-touch finish, color #F5F3EF, no print lines. The horizontal light groove glows with a soft diffused jade green light, color #3FA37C, uniform, no individual LEDs. Pedestal in the same matte white. The circuit board inside the back cutout is dark green with silver metal ports. Premium consumer electronics look, clean studio product render.",
+    "ambar": "Matte warm white plastic body with a fine soft-touch finish, color #F5F3EF, no print lines. The horizontal light groove glows with a soft diffused warm amber light, color #E8A33D, uniform, no individual LEDs. Pedestal in the same matte white. The circuit board inside the back cutout is dark green with silver metal ports. Premium consumer electronics look, clean studio product render."
+  }
+}

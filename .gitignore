@@ -1,0 +1,16 @@
+# Secretos
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Mallas de Meshy: pesadas. task.json y thumbnail.png sí se versionan.
+# Para subir el modelo final: git add -f totm-3d/models/<carpeta>/model.glb
+totm-3d/models/**/*.glb
+totm-3d/models/**/*.stl
+
+.DS_Store

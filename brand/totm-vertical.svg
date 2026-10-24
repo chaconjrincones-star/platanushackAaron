@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 460" role="img" aria-label="TOTM">
+  <g fill="#0B0B0C">
+    <rect x="14" y="0" width="72" height="14"/><rect x="43" y="0" width="14" height="100"/>
+    <rect x="14" y="240" width="72" height="14"/><rect x="43" y="240" width="14" height="100"/>
+    <path d="M0 460V360h16l34 52 34-52h16v100H86v-76l-30 46H44l-30-46v76z"/>
+  </g>
+  <circle cx="50" cy="170" r="43" fill="none" stroke="#3FA37C" stroke-width="14"/>
+</svg>
